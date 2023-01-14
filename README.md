@@ -1,6 +1,48 @@
-# Getting Started with Create React App
+# React subpath demo
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## How to check the demo?
+
+Just open a terminal in the root project and run:
+```bash
+docker-compose up -d
+```
+
+This will create 3 docker services. 1 proxy to simulate the AWS ELB for example and 2 react dockerized apps.
+
+The React app is a basic app bootstrapped with `create-react-app` the only changes to the app that I've made
+was to add the `react-router-dom` and in the `createBrowserRouter` method to set the `basename` option to `/`.
+It is possible to script that, but it's easier like this.
+
+## How it works?
+The `Dockerfile` contains all the logic that makes it work. To make it work under a sub-path you need to compile the app
+with some options:
+ 1. In `package.json` you need to set the `homepage` property to the sub-path you want your app to be served under.
+for example `app1`.
+2. You need to add the same sub-path to your router. In this case I added it in the `basename` option
+passed to `createBrowserRouter` method.
+
+The problem is that both of the steps must be done at compile time, you can't do it at run time, so how does it work?
+1. There is a command in the `Dockerfile` that appends the `homepage` property to the `package.json`
+2. There is a command that patches the `main.jsx` file (for this example that's the file
+where `createBrowserRouter` is called and where the `basename` is set).
+
+Both values of the `homepage` and `basename` are placeholders. In the `Dockerfile` i used a UUID as a placeholder
+since they are unique.
+
+    Note that the placeholder can be updated when you do the docker build by passing an extra argument but you need
+    to be careful areound the special characters.
+
+Ex:
+```bash
+docker build -t your-image-tag --build-arg PLACEHOLDER=your_custom_placeholder .
+```
+
+The final thing that ties it all together is a entrypoint script that replaces the placeholder with the value from
+a environment variable named `REACT_HOMEPAGE`.
+
+    Note that REACT_HOMEPAGE is / by default.
 
 ## Available Scripts
 

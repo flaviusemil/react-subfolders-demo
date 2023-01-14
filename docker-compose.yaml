@@ -1,0 +1,27 @@
+version: "3.3"
+services:
+  react-sub-folder-demo-app1:
+    build:
+      context: .
+      args:
+        - "PLACEHOLDER=my-simple-app-placeholder"
+    container_name: "react-service-app1"
+    environment:
+      - "REACT_HOMEPAGE=/app1"
+    ports:
+      - "9997:80"
+  react-sub-folder-demo-app2:
+    build:
+      context: .
+    container_name: "react-service-app2"
+    environment:
+      - "REACT_HOMEPAGE=/app2"
+    ports:
+      - "9998:80"
+
+  react-proxy:
+    build:
+      context: proxy
+    container_name: "react-proxy"
+    ports:
+      - "9999:80"

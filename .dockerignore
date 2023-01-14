@@ -1,0 +1,5 @@
+proxy
+build
+node_modules
+Dockerfile
+docker-compose.yaml
